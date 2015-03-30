@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PassGen</string>
+    <string name="passText">Press button for new password</string>
+    <string name="genButton">Generate Password</string>
+    <string name="action_settings">Settings</string>
+
+</resources>
