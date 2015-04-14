@@ -7,7 +7,7 @@
  * 
  * Possible Future Features : User-added length; user-added seed words/numbers (dangerous!); Slider for strength vs. memorability
  * 
- * Notes: WordList2.txt adapted from Alan Beale's public domain Core Vocabulary ESL word
+ * Notes: WordListAll.txt adapted from Alan Beale's public domain Core Vocabulary ESL word
  * lists. More information here: http://wordlist.sourceforge.net/12dicts-readme.html 
  * Accessed at http://wordlist.aspell.net/12dicts/
  * 
@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -50,19 +51,122 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	int listLen;
 
+	// TODO : Implement loading splash screen
+	
+	// TODO : Tweak scrambling of word-only passwords
+
+	// TODO : Continue cultivation of wordlist
+	
+	// TODO : Write password strength/length checker and run it before returning final password
+
+	// generatePassword picks two 5-9 letter words from the wordlist and applies transformations to them.
 	public void generatePassword(View v) {
 
 		word1 = wordsList.get(rng.nextInt(listLen));
+		while (word1.length() > 9 || word1.length() < 5){
+			word1 = wordsList.get(rng.nextInt(listLen));
+		}
+		
 		word2 = wordsList.get(rng.nextInt(listLen));
-		word3 = wordsList.get(rng.nextInt(listLen));
+		while (word2.length() > 9 || word2.length() < 5){
+			word2 = wordsList.get(rng.nextInt(listLen));
+		}
+		
+		word1 = word1.substring(0, 1).toUpperCase() + word1.substring(1);
+		word2 = word2.substring(0, 1).toUpperCase() + word2.substring(1);
 
-		tempPass = word1 + " " + word2 + " " + word3;
-
+		tempPass = randomSymStr() + scramblePass(word1) + "_" + scramblePass(word2) + rng.nextInt(99) + randomSymStr(); //+ " " + word3;
+	}
+	
+	// Method to return a random symbol as a single-character string
+	public String randomSymStr(){
+		
+		int randSymNum = rng.nextInt(18);
+		
+		switch (randSymNum){
+		
+		case 0:
+			return "!";
+		case 1:
+			return "~";
+		case 2:
+			return "@";
+		case 3:
+			return "#";
+		case 4:
+			return "$";
+		case 5:
+			return "%";
+		case 6:
+			return "^";
+		case 7:
+			return "&";
+		case 8:
+			return "*";
+		case 9:
+			return "(";
+		case 10:
+			return ")";
+		case 11:
+			return "-";
+		case 12:
+			return "+";
+		case 13:
+			return "_";
+		case 14:
+			return "=";
+		case 15:
+			return "<";
+		case 16:
+			return ">";
+		case 17:
+			return ".";
+		default:
+			return "!";
+		}
+		
+	}
+	
+	// Iterate through input String replacing letters with a similar-looking number
+	public String scramblePass( String passIn ){
+		
+		passIn += " ";
+		
+		for (int i = 1; i < passIn.length() - 2; i++){
+			
+			passIn = replaceCharWithNum(passIn, i );				
+		}
+				
+		return passIn.substring( 0, passIn.length() - 1);	
 	}
 
-	// TODO 01 : Implement scrambling of word-only passwords
-
-	// TODO 02 : Continue cultivation of wordlist
+	// Decomposed method for replacing letters with numbers.
+	public String replaceCharWithNum( String stringIn, int index ){
+		
+		int percentChance = rng.nextInt(100);
+		
+		if ( percentChance < 0 )
+			return stringIn;
+		
+		switch (stringIn.charAt(index)){
+		
+		case 'a':
+			return stringIn.substring(0, index) + "4" + stringIn.substring(index + 1);
+		case 'e':
+			return stringIn.substring(0, index) + "3" + stringIn.substring(index + 1);
+		case 'i':
+			return stringIn.substring(0, index) + "1" + stringIn.substring(index + 1);
+		case 'o':
+			return stringIn.substring(0, index) + "0" + stringIn.substring(index + 1);
+		case 't':
+			return stringIn.substring(0, index) + "7" + stringIn.substring(index + 1);
+		case 's':
+			return stringIn.substring(0, index) + "5" + stringIn.substring(index + 1);
+		default:
+			return stringIn;
+		}
+		
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +185,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		try {
 			wordInput = getApplicationContext().getAssets().open(
-					"Wordlist2.txt");
+					"Wordlist59.txt");
 		} catch (IOException e) {
 
 			Toast.makeText(getApplicationContext(),
