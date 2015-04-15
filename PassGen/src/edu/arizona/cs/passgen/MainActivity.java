@@ -35,21 +35,21 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnClickListener {
 
-	InputStream wordInput;
-	ArrayList<String> wordsList;
-	Scanner scan;
-	Random rng;
+	private InputStream wordInput;
+	private ArrayList<String> wordsList;
+	private Scanner scan;
+	private Random rng;
 
-	EditText passText;
-	Button genButton;
+	private EditText passText;
+	private Button genButton;
 
-	String word1;
-	String word2;
-	String word3;
+	private String word1;
+	private String word2;
+	//private String word3;
 
-	String tempPass;
+	private String tempPass;
 
-	int listLen;
+	private int listLen;
 
 	// TODO : Implement loading splash screen
 	
@@ -60,7 +60,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	// TODO : Write password strength/length checker and run it before returning final password
 
 	// generatePassword picks two 5-9 letter words from the wordlist and applies transformations to them.
-	public void generatePassword(View v) {
+	private void generatePassword(View v) {
 
 		word1 = wordsList.get(rng.nextInt(listLen));
 		while (word1.length() > 9 || word1.length() < 5){
@@ -79,7 +79,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 	
 	// Method to return a random symbol as a single-character string
-	public String randomSymStr(){
+	private String randomSymStr(){
 		
 		int randSymNum = rng.nextInt(18);
 		
@@ -128,7 +128,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 	
 	// Iterate through input String replacing letters with a similar-looking number
-	public String scramblePass( String passIn ){
+	private String scramblePass( String passIn ){
 		
 		passIn += " ";
 		
@@ -141,7 +141,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	// Decomposed method for replacing letters with numbers.
-	public String replaceCharWithNum( String stringIn, int index ){
+	private String replaceCharWithNum( String stringIn, int index ){
 		
 		int percentChance = rng.nextInt(100);
 		
@@ -179,7 +179,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		genButton = (Button) findViewById(R.id.genButton);
 		genButton.setOnClickListener(this);
 
-		tempPass = word1 = word2 = word3 = "";
+		tempPass = word1 = word2 = "";
 
 		wordsList = new ArrayList<String>();
 
