@@ -7,9 +7,12 @@
  * 
  * Possible Future Features : User-added length; user-added seed words/numbers (dangerous!); Slider for strength vs. memorability
  * 
- * Notes: WordListAll.txt adapted from Alan Beale's public domain Core Vocabulary ESL word
+ * Notes: WordListAll.txt and WordList59.txt adapted from Alan Beale's public domain Core Vocabulary ESL word
  * lists. More information here: http://wordlist.sourceforge.net/12dicts-readme.html 
  * Accessed at http://wordlist.aspell.net/12dicts/
+ * 
+ * 5 - 9 letter words are chosen as it's easiest for people to hold 7 +- 2 things in working memory at a time:
+ * http://www.musanim.com/miller1956/
  * 
  * Status : In Progress
  */
@@ -47,35 +50,32 @@ public class MainActivity extends Activity implements OnClickListener {
 	private String word2;
 	//private String word3;
 
-	private String tempPass;
+	private String retPass;
 
 	private int listLen;
 
 	// TODO : Implement loading splash screen
 	
-	// TODO : Tweak scrambling of word-only passwords
+	// TODO : Tweak scrambling of passwords (slider?)
 
 	// TODO : Continue cultivation of wordlist
 	
-	// TODO : Write password strength/length checker and run it before returning final password
+	// TODO : Write password strength/length checker and run it before returning final password (?)
 
-	// generatePassword picks two 5-9 letter words from the wordlist and applies transformations to them.
+	// generatePassword picks two 5-9 letter words from the wordlist and applies transformations 
+	// (letter -> num, addition of symbols and numbers) to them.
 	private void generatePassword(View v) {
 
+		// Randomly pick two words from the wordlist
 		word1 = wordsList.get(rng.nextInt(listLen));
-		while (word1.length() > 9 || word1.length() < 5){
-			word1 = wordsList.get(rng.nextInt(listLen));
-		}
-		
 		word2 = wordsList.get(rng.nextInt(listLen));
-		while (word2.length() > 9 || word2.length() < 5){
-			word2 = wordsList.get(rng.nextInt(listLen));
-		}
-		
+
+		// Capitalize first letter of each word 
 		word1 = word1.substring(0, 1).toUpperCase() + word1.substring(1);
 		word2 = word2.substring(0, 1).toUpperCase() + word2.substring(1);
 
-		tempPass = randomSymStr() + scramblePass(word1) + "_" + scramblePass(word2) + rng.nextInt(99) + randomSymStr(); //+ " " + word3;
+		// password to return is a random symbol, the two words scrambled and separated by an underscore, a random integer, and a random symbol
+		retPass = randomSymStr() + scramblePass(word1) + "_" + scramblePass(word2) + rng.nextInt(99) + randomSymStr(); //+ " " + word3;
 	}
 	
 	// Method to return a random symbol as a single-character string
@@ -85,46 +85,26 @@ public class MainActivity extends Activity implements OnClickListener {
 		
 		switch (randSymNum){
 		
-		case 0:
-			return "!";
-		case 1:
-			return "~";
-		case 2:
-			return "@";
-		case 3:
-			return "#";
-		case 4:
-			return "$";
-		case 5:
-			return "%";
-		case 6:
-			return "^";
-		case 7:
-			return "&";
-		case 8:
-			return "*";
-		case 9:
-			return "(";
-		case 10:
-			return ")";
-		case 11:
-			return "-";
-		case 12:
-			return "+";
-		case 13:
-			return "_";
-		case 14:
-			return "=";
-		case 15:
-			return "<";
-		case 16:
-			return ">";
-		case 17:
-			return ".";
-		default:
-			return "!";
+		case 0:  return "!";
+		case 1:  return "~";
+		case 2:  return "@";
+		case 3:  return "#";
+		case 4:  return "$";
+		case 5:  return "%";
+		case 6:  return "^";
+		case 7:  return "&";
+		case 8:  return "*";
+		case 9:  return "(";
+		case 10: return ")";
+		case 11: return "-";
+		case 12: return "+";
+		case 13: return "_";
+		case 14: return "=";
+		case 15: return "<";
+		case 16: return ">";
+		case 17: return ".";
+		default: return "!";
 		}
-		
 	}
 	
 	// Iterate through input String replacing letters with a similar-looking number
@@ -132,9 +112,9 @@ public class MainActivity extends Activity implements OnClickListener {
 		
 		passIn += " ";
 		
-		for (int i = 1; i < passIn.length() - 2; i++){
+		for ( int i = 1; i < passIn.length() - 2; i++ ){
 			
-			passIn = replaceCharWithNum(passIn, i );				
+			passIn = replaceCharWithNum( passIn, i );				
 		}
 				
 		return passIn.substring( 0, passIn.length() - 1);	
@@ -173,16 +153,18 @@ public class MainActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		// Instantiate/initialize
 		passText = (EditText) findViewById(R.id.passText);
 		passText.setText("Press button to generate a password!");
 
 		genButton = (Button) findViewById(R.id.genButton);
 		genButton.setOnClickListener(this);
 
-		tempPass = word1 = word2 = "";
+		retPass = word1 = word2 = "";
 
 		wordsList = new ArrayList<String>();
 
+		// Import wordlist
 		try {
 			wordInput = getApplicationContext().getAssets().open(
 					"Wordlist59.txt");
@@ -200,7 +182,6 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		rng = new Random();
 		listLen = wordsList.size() - 1;
-
 	}
 
 	@Override
@@ -226,13 +207,15 @@ public class MainActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		if (v.getId() == genButton.getId()) {
 
+			// Generate the password via above methods
 			generatePassword(v);
 
-			passText.setText(tempPass);
+			// Display generated password
+			passText.setText(retPass);
 
+			// Show Toast
 			Toast.makeText(getApplicationContext(), "Password Generated",
 					Toast.LENGTH_SHORT).show();
-
 		}
 	}
 }
